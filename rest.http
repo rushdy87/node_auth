@@ -6,6 +6,12 @@ POST http://localhost:3000/api/auth/login
 
 ###Register route
 POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+    "email": "john_doe@user.com",
+    "password": "password2"
+}
 
 ###Refresh token route
 POST http://localhost:3000/api/auth/refresh-token

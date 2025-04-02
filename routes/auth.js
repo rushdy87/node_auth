@@ -1,9 +1,36 @@
 const express = require("express");
+const createError = require("http-errors");
+
+const User = require("../models/user");
+const { authSchema } = require("../helpers/validation-schema");
 
 const router = express.Router();
 
 router.post("/register", async (req, res, next) => {
-  res.json("Register route");
+  const result = await authSchema.validateAsync(req.body);
+
+  try {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: result.email });
+
+    if (existingUser) {
+      throw createError.Conflict(
+        `User with email ${result.email} already exists`
+      );
+    }
+
+    // Create new user
+    const newUser = new User(result);
+    const user = await newUser.save();
+
+    // Send response
+    res.status(201).json({ message: "User registered successfully", user });
+  } catch (error) {
+    if (error.isJoi) {
+      error.status = 422;
+    }
+    next(error);
+  }
 });
 
 router.post("/login", async (req, res, next) => {
