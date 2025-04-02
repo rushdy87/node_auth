@@ -1,0 +1,14 @@
+GET http://localhost:3000
+
+###Login route
+POST http://localhost:3000/api/auth/login
+
+
+###Register route
+POST http://localhost:3000/api/auth/register
+
+###Refresh token route
+POST http://localhost:3000/api/auth/refresh-token
+
+###Logout route
+DELETE http://localhost:3000/api/auth/logout
