@@ -9,7 +9,7 @@ module.exports = {
       const payload = {};
       const secret = process.env.ACCESS_TOKEN_SECRET;
       const options = {
-        expiresIn: "15s",
+        expiresIn: "15m",
         issuer: "node_auth",
         audience: userId.toString(),
       };
@@ -32,7 +32,7 @@ module.exports = {
     JWT.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, payload) => {
       if (err) {
         const message =
-          err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
+          err.message === "JsonWebTokenError" ? "Unauthorized" : err.message;
         return next(createError.Unauthorized(message));
       }
       req.payload = payload;
