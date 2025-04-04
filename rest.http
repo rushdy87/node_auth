@@ -9,8 +9,8 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "john_doe@user.com",
-    "password": "password2"
+    "email": "user9@user.com",
+    "password": "password"
 }
 
 ###Refresh token route
