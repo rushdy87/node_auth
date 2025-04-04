@@ -3,7 +3,11 @@ const createError = require("http-errors");
 
 const User = require("../models/user");
 const { authSchema } = require("../helpers/validation-schema");
-const { signAccessToken } = require("../helpers/jwt-helper");
+const {
+  signAccessToken,
+  signRefreshToken,
+  verifyRefreshToken,
+} = require("../helpers/jwt-helper");
 
 const router = express.Router();
 
@@ -25,11 +29,14 @@ router.post("/register", async (req, res, next) => {
     const user = await newUser.save();
 
     const accessToken = await signAccessToken(user._id);
+    const refreshToken = await signRefreshToken(user._id);
 
     // Send response
-    res
-      .status(201)
-      .json({ message: "User registered successfully", accessToken });
+    res.status(201).json({
+      message: "User registered successfully",
+      accessToken,
+      refreshToken,
+    });
   } catch (error) {
     if (error.isJoi) {
       error.status = 422;
@@ -53,10 +60,12 @@ router.post("/login", async (req, res, next) => {
     }
 
     const accessToken = await signAccessToken(user._id);
+    const refreshToken = await signRefreshToken(user._id);
 
     res.status(200).json({
       message: "Login successful",
       accessToken,
+      refreshToken,
     });
   } catch (error) {
     if (error.isJoi) {
@@ -67,7 +76,24 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/refresh-token", async (req, res, next) => {
-  res.json("Refresh token route");
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    return next(createError.BadRequest("Refresh token is required"));
+  }
+
+  try {
+    const userId = await verifyRefreshToken(refreshToken);
+    const accessToken = await signAccessToken(userId);
+    const newRefreshToken = await signRefreshToken(userId);
+
+    res.status(200).json({
+      message: "Access token refreshed successfully",
+      accessToken,
+      refreshToken: newRefreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.delete("/logout", async (req, res, next) => {

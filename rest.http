@@ -15,12 +15,17 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-    "email": "user9@user.com",
+    "email": "user10@user.com",
     "password": "password"
 }
 
 ###Refresh token route
 POST http://localhost:3000/api/auth/refresh-token
+Content-Type: application/json
+
+{
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3NDM3NDM5MTgsImV4cCI6MTc3NTMwMTUxOCwiYXVkIjoiNjdlZjQ5NmNkZThmYzJmNjdhOGY3NDdjIiwiaXNzIjoibm9kZV9hdXRoIn0.YzqLLExfwXjMdcN3JF8bOizhrnAbRqpxyEFpLbBSUiQ"
+}
 
 ###Logout route
 DELETE http://localhost:3000/api/auth/logout
