@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const createError = require("http-errors");
 require("dotenv").config();
 require("./helpers/init-mongodb");
+require("./helpers/init_redis");
 
 const AuthRoute = require("./routes/auth");
 const { verifyAccessToken } = require("./helpers/jwt-helper");
