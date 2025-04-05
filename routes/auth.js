@@ -8,6 +8,7 @@ const {
   signRefreshToken,
   verifyRefreshToken,
 } = require("../helpers/jwt-helper");
+const connectRedis = require("../helpers/init_redis");
 
 const router = express.Router();
 
@@ -97,7 +98,23 @@ router.post("/refresh-token", async (req, res, next) => {
 });
 
 router.delete("/logout", async (req, res, next) => {
-  res.json("Logout route");
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return next(createError.BadRequest("Refresh token is required"));
+    }
+
+    const userId = await verifyRefreshToken(refreshToken);
+
+    const redisClient = await connectRedis();
+    await redisClient.del(userId.toString());
+
+    res.status(200).json({
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
